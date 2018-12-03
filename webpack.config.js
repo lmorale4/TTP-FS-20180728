@@ -1,8 +1,7 @@
 const path = require('path');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
-  entry: './client/main.js',
+  entry: ['@babel/polyfill', './client/main.js'],
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'bundle.js',
@@ -17,9 +16,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new LiveReloadPlugin({
-      appendScriptTag: true,
-    }),
-  ],
 };
