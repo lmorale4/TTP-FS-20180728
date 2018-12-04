@@ -8,6 +8,7 @@ router.post('/login', async (req, res, next) => {
         email: req.body.email,
       },
     });
+
     if (user) res.json(user);
     else res.status(401).send('Wrong email and/or password');
   } catch (err) {

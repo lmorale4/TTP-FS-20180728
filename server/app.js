@@ -1,9 +1,8 @@
 const express = require('express');
+const app = express();
 const volleyball = require('volleyball');
 const path = require('path');
-const { db } = require('./db');
-
-const app = express();
+const { db, Transaction } = require('./db');
 
 // logging middleware
 app.use(volleyball);
@@ -16,6 +15,10 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/auth', require('./auth'));
 app.use('/api', require('./api'));
 
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
   console.error(err.stack);
@@ -24,10 +27,11 @@ app.use((err, req, res, next) => {
 
 const start = async () => {
   const PORT = 8080;
-  await db.sync({ force: true });
+  await db.sync({ force: false });
+  await Transaction.sync({ force: false });
   app.listen(PORT, err => {
     if (err) console.error(err);
-    else console.log('server is listening on port', PORT);
+    else console.log(`http://localhost:${PORT}`);
   });
 };
 

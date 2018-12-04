@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../db');
 
 const Transaction = db.define('transaction', {
-  symbol: {
+  ticker: {
     type: Sequelize.STRING,
   },
   shares: {
@@ -13,6 +13,10 @@ const Transaction = db.define('transaction', {
     type: Sequelize.INTEGER,
     get() {
       return this.getDataValue('price') / 100;
+    },
+    set(price) {
+      // convert it into pennies
+      this.setDataValue('price', price * 100);
     },
   },
 });

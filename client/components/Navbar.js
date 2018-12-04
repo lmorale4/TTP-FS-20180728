@@ -9,7 +9,7 @@ const Navbar = () => (
       <NavLink to="/">
         <Button color="secondary">Portfolio</Button>
       </NavLink>
-      <NavLink to="/">
+      <NavLink to="/transactions">
         <Button color="secondary">Transactions</Button>
       </NavLink>
     </Toolbar>

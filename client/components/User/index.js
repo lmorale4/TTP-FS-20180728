@@ -1,4 +1,3 @@
 export { default as UserForm } from './UserForm';
-export { default as Portfolio } from './Portfolio';
-export { default as LoginForm } from './LoginForm';
-export { default as SignUpForm } from './SignUpForm';
+export { default as LoginFields } from './LoginFields';
+export { default as SignUpFields } from './SignUpFields';

@@ -26,6 +26,9 @@ const User = db.define('user', {
     get() {
       return this.getDataValue('balance') / 100;
     },
+    set(balance) {
+      this.setDataValue('balance', balance * 100);
+    },
   },
   password: {
     type: Sequelize.STRING,
