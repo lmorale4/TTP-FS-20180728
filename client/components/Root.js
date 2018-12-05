@@ -23,6 +23,11 @@ const theme = createMuiTheme({
     secondary: {
       main: '#fff',
     },
+    status: {
+      bad: '#f8d7da',
+      ok: '#e8e7e7',
+      good: '#d4edda',
+    },
   },
   typography: {
     useNextVariants: true,

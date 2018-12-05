@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
 
 const start = async () => {
   const PORT = 8080;
-  await db.sync({ force: false });
+  await db.sync({ force: true });
   await Transaction.sync({ force: false });
   app.listen(PORT, err => {
     if (err) console.error(err);

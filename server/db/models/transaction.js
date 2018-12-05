@@ -21,4 +21,14 @@ const Transaction = db.define('transaction', {
   },
 });
 
+Transaction.getTickers = async userId => {
+  const tickers = await Transaction.findAll({
+    where: {
+      userId: userId,
+    },
+    attributes: ['ticker'],
+  });
+  return tickers.map(tick => tick.ticker);
+};
+
 module.exports = Transaction;

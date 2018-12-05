@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { getTransactions } from './transactions';
+import { getTransactions, getCurrPrices } from './transactions';
+import { requestInInterval } from '../../utils';
 
 // Constants
 const SET_USER = 'SET_USER';

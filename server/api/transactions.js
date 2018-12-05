@@ -14,6 +14,15 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/tickers', async (req, res, next) => {
+  try {
+    const tickers = await Transaction.getTickers(req.userId);
+    res.json(tickers);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
