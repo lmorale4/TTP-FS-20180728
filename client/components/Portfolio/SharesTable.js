@@ -57,7 +57,7 @@ class SharesTable extends Component {
     return (
       <Grid item xs={8} className={classes.grow}>
         <Typography variant="h5">
-          {isPortfolio ? 'Your Assets' : 'Transactions'}
+          {isPortfolio ? 'Your Stock' : 'Transactions'}
         </Typography>
         <Table>
           <TableHead>
