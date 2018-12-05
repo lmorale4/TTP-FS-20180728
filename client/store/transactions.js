@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { updateBalance } from './user';
-import { requestInInterval } from '../../utils';
+import { clearingInterval, requestInInterval } from '../../utils';
 
 // Constants
 import { REMOVE_USER } from './';
@@ -12,6 +12,7 @@ const SET_INTERVAL_TO_CLEAR = 'SET_INTERVAL_TO_CLEAR';
 
 // Actions
 import { setError } from './error';
+import { fetching } from './isFetching';
 const setTransactions = transactions => ({
   type: SET_TRANSACTIONS,
   transactions,
@@ -36,20 +37,26 @@ const setCurrentPrices = prices => ({
 export const getTransactions = () => async (dispatch, getState) => {
   try {
     const { user } = getState();
+    dispatch(fetching(true));
     const { data } = await axios.get(`/api/user/${user.id}/transactions`);
     dispatch(setTransactions(data));
+    dispatch(fetching(false));
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };
 
 const getStockPrice = ticker => async dispatch => {
   try {
+    dispatch(fetching(true));
     const { data } = await axios.get(
       `https://api.iextrading.com/1.0/stock/market/batch?symbols=${ticker}&types=quote&filter=open,latestPrice`
     );
     dispatch(addStockPrice(data));
+    dispatch(fetching(false));
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };
@@ -57,21 +64,36 @@ const getStockPrice = ticker => async dispatch => {
 export const buyStock = stock => async (dispatch, getState) => {
   try {
     const { user } = getState();
-    const { data } = await axios.post(
-      `/api/user/${user.id}/transactions`,
-      stock
+    dispatch(fetching(true));
+    const balance =
+      (user.balance * 100 - Math.round(+stock.price * 100) * +stock.shares) /
+      100;
+    console.log(
+      'BALANCE',
+      user.balance,
+      'PRICE',
+      stock.price,
+      'SHARES',
+      stock.shares,
+      '=',
+      balance
     );
+    const { data } = await axios.post(`/api/user/${user.id}/transactions`, {
+      ...stock,
+      balance,
+    });
 
-    const balance = user.balance - data.price * data.shares;
     await dispatch(updateBalance(balance));
     await dispatch(getStockPrice(data.ticker));
     await dispatch(addTransaction(data));
     const { transactions } = getState();
     if (transactions.all.length === 1) {
-      console.log('STARTING INTERVAL');
+      clearingInterval();
       requestInInterval();
     }
+    dispatch(fetching(false));
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };
@@ -91,6 +113,7 @@ export const getCurrPrices = () => async (dispatch, getState) => {
       dispatch(setCurrentPrices(currPrices.data));
     }
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };

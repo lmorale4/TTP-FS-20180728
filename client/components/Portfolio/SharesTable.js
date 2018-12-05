@@ -42,9 +42,9 @@ class SharesTable extends Component {
     }
   }
 
-  setColor(price, stockPrice) {
-    if (stockPrice === price) return 'ok';
-    else if (stockPrice > price) return 'good';
+  setColor(latest, open) {
+    if (latest === open) return 'ok';
+    else if (latest > open) return 'good';
     else return 'bad';
   }
   render() {
@@ -70,7 +70,9 @@ class SharesTable extends Component {
                     isPortfolio
                       ? classes[
                           this.setColor(
-                            stock.price,
+                            Math.round(
+                              currPrices[stock.ticker].quote.latestPrice * 100
+                            ) / 100,
                             Math.round(
                               currPrices[stock.ticker].quote.open * 100
                             ) / 100

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getTransactions, getCurrPrices } from './transactions';
 
 // Constants
 import { REMOVE_USER } from './';
@@ -8,6 +7,8 @@ const UPDATE_BALACE = 'UPDATE_BALACE';
 
 // Actions
 import { setError } from './error';
+import { fetching } from './isFetching';
+import { getTransactions, getCurrPrices } from './transactions';
 const setUser = user => ({
   type: SET_USER,
   user,
@@ -25,9 +26,16 @@ export const removeUser = () => ({
 // Thunks
 export const me = () => async dispatch => {
   try {
-    const res = await axios.get('/auth/me');
-    dispatch(setUser(res.data || {}));
+    dispatch(fetching(true));
+    const { data } = await axios.get('/auth/me');
+    dispatch(setUser(data || {}));
+    if (data) {
+      await dispatch(getCurrPrices());
+      await dispatch(getTransactions());
+    }
+    dispatch(fetching(false));
   } catch (err) {
+    dispatch(fetching(false));
     console.error(err);
   }
 };
@@ -35,29 +43,36 @@ export const me = () => async dispatch => {
 export const auth = (user, history, method) => async dispatch => {
   let res;
   try {
+    dispatch(fetching(true));
     res = await axios.post(`/auth/${method}`, user);
+    dispatch(fetching(false));
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 
   try {
+    dispatch(fetching(true));
     await dispatch(setUser(res.data));
-    console.log('BEFORE GETTING');
     await dispatch(getCurrPrices());
     await dispatch(getTransactions());
-    console.log('AFTER GETTING');
+    dispatch(fetching(false));
     history.push('/portfolio');
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };
 
 export const logout = history => async dispatch => {
   try {
+    dispatch(fetching(true));
     await axios.post('/auth/logout');
     dispatch(removeUser());
+    dispatch(fetching(false));
     history.push('/login');
   } catch (err) {
+    dispatch(fetching(false));
     dispatch(setError(err));
   }
 };

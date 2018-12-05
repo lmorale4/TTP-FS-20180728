@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { logout } from '../store/user';
 
 import { NavLink, withRouter } from 'react-router-dom';
+
 import { AppBar, Toolbar, Button } from '@material-ui/core';
 
 import { withStyles } from '@material-ui/core/styles';

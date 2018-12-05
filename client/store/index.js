@@ -1,11 +1,12 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import loggingMiddleware from 'redux-logger';
+import { createLogger } from 'redux-logger';
 
 import user from './user';
 import transactions from './transactions';
 import tickers from './tickers';
 import error from './error';
+import isFetching from './isFetching';
 
 export const REMOVE_USER = 'REMOVE_USER';
 export const SET_ERROR = 'SET_ERROR';
@@ -16,9 +17,10 @@ const reducer = combineReducers({
   transactions,
   tickers,
   error,
+  isFetching,
 });
 
 export default createStore(
   reducer,
-  applyMiddleware(thunkMiddleware, loggingMiddleware)
+  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
 );

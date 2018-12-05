@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const volleyball = require('volleyball');
 const path = require('path');
-const { db, Transaction } = require('./db');
+const { db } = require('./db');
 
 const compression = require('compression');
 const session = require('express-session');

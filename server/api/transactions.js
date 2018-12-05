@@ -31,8 +31,8 @@ router.post('/', async (req, res, next) => {
   try {
     if (req.user.id && req.user.id === +req.userId) {
       const user = await User.findById(req.userId);
-      const balance = user.balance - req.body.price * req.body.shares;
-      await user.update({ balance });
+      console.log('BALANCE', req.body.balance);
+      await user.update({ balance: req.body.balance });
       const transaction = await Transaction.create({
         ...req.body,
         userId: req.userId,

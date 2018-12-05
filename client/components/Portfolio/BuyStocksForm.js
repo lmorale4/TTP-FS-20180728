@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getPrice } from '../../store/tickers';
+import { getPrice, removeCurrTickerPrice } from '../../store/tickers';
 import { buyStock } from '../../store/transactions';
 
 import {
@@ -37,13 +37,18 @@ class BuyStocksForm extends Component {
     evt.preventDefault();
     const { user, price } = this.props;
     const { shares } = this.state;
-    if (user.balance > price * shares) {
+    if (user.balance > +price * +shares) {
       console.log({ ...this.state, price });
       this.props.buyStock({
         ...this.state,
-        price,
+        price: +price,
       });
     }
+    this.props.removePrice();
+    this.setState({
+      ticker: '',
+      shares: 0,
+    });
   }
 
   render() {
@@ -89,12 +94,13 @@ class BuyStocksForm extends Component {
 const mapState = state => ({
   user: state.user,
   tickers: state.tickers.all,
-  price: state.tickers.currentTickerPrice,
+  price: Math.round(state.tickers.currentTickerPrice * 100) / 100,
 });
 
 const mapDispatch = dispatch => ({
   getPrice: ticker => dispatch(getPrice(ticker)),
   buyStock: stock => dispatch(buyStock(stock)),
+  removePrice: stock => dispatch(removeCurrTickerPrice(stock)),
 });
 
 export default connect(

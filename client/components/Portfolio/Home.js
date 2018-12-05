@@ -11,7 +11,10 @@ import { Grid, Typography } from '@material-ui/core';
 class Home extends Component {
   componentDidMount() {
     const { transactions } = this.props;
-    if (transactions.length) requestInInterval();
+    if (transactions.length) {
+      clearingInterval();
+      requestInInterval();
+    }
   }
   componentWillUnmount() {
     clearingInterval();
@@ -23,17 +26,14 @@ class Home extends Component {
         <Typography variant="h2">
           Portfolio ($
           {Object.keys(currPrices).length
-            ? (Math.round(
-                transactions.reduce((acc, stock) => {
-                  return Math.round(
-                    acc +
-                      currPrices[stock.ticker].quote.latestPrice *
-                        stock.shares *
-                        100
-                  );
-                }, 0)
-              ) +
-                user.balance * 100) /
+            ? (transactions.reduce((acc, stock) => {
+                return (
+                  acc +
+                  Math.round(currPrices[stock.ticker].quote.latestPrice * 100) *
+                    stock.shares
+                );
+              }, 0) +
+                Math.round(user.balance * 100)) /
               100
             : user.balance}
           )
