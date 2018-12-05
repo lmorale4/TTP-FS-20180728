@@ -8,6 +8,8 @@ import {
 import { connect } from 'react-redux';
 
 import { getTickers } from '../store/tickers';
+import { getTransactions, getCurrPrices } from '../store/transactions';
+import { me } from '../store/user';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { UserForm } from './User';
@@ -36,7 +38,7 @@ const theme = createMuiTheme({
 
 class Root extends Component {
   componentDidMount() {
-    this.props.getTickers();
+    this.props.loadData();
   }
   render() {
     const { isLoggedIn } = this.props;
@@ -71,10 +73,16 @@ class Root extends Component {
 }
 const mapState = state => ({
   isLoggedIn: !!state.user.id,
+  error: state.error,
 });
 
 const mapDispatch = dispatch => ({
-  getTickers: () => dispatch(getTickers()),
+  loadData: async () => {
+    await dispatch(me());
+    await dispatch(getTickers());
+    await dispatch(getCurrPrices());
+    await dispatch(getTransactions());
+  },
 });
 
 export default connect(

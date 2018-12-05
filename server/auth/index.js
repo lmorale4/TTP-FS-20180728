@@ -9,7 +9,7 @@ router.post('/login', async (req, res, next) => {
       },
     });
 
-    if (user) res.json(user);
+    if (user) req.login(user, err => (err ? next(err) : res.json(user)));
     else res.status(401).send('Wrong email and/or password');
   } catch (err) {
     next(err);
@@ -22,7 +22,7 @@ router.post('/signup', async (req, res, next) => {
       ...req.body,
       name: `${req.body.firstName} ${req.body.lastName}`,
     });
-    res.json(user);
+    req.login(user, err => (err ? next(err) : res.json(user)));
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
       res.status(401).send('User already exists');
@@ -30,6 +30,16 @@ router.post('/signup', async (req, res, next) => {
       next(err);
     }
   }
+});
+
+router.post('/logout', (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+});
+
+router.get('/me', (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;

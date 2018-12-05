@@ -5,6 +5,7 @@ const SET_TICKERS = 'SET_TICKERS';
 const SET_CURRENT_TICKER_PRICE = 'SET_CURRENT_TICKER_PRICE';
 
 // Actions
+import { setError } from './error';
 const setTickers = tickers => ({
   type: SET_TICKERS,
   tickers,
@@ -24,7 +25,7 @@ export const getTickers = () => async dispatch => {
     const tickers = data.map(item => item.symbol);
     dispatch(setTickers(tickers));
   } catch (err) {
-    console.error(err);
+    dispatch(setError(err));
   }
 };
 
@@ -36,7 +37,7 @@ export const getPrice = ticker => async dispatch => {
     const { latestPrice } = data.quote;
     dispatch(setCurrTickerPrice(latestPrice));
   } catch (err) {
-    console.error(err);
+    dispatch(setError(err));
   }
 };
 

@@ -69,7 +69,7 @@ class BuyStocksForm extends Component {
               </option>
             ))}
           </Select>
-          {price > 0 && <p>Price: {price}</p>}
+          {price > 0 && <p>Price per Share: {price}</p>}
           <TextField
             label="Qty"
             name="shares"

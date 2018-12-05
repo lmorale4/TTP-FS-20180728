@@ -3,12 +3,14 @@ const { Transaction, User } = require('../db');
 
 router.get('/', async (req, res, next) => {
   try {
-    const transactions = await Transaction.findAll({
-      where: {
-        userId: req.userId,
-      },
-    });
-    res.json(transactions);
+    if (req.user && req.user.id && req.user.id === +req.userId) {
+      const transactions = await Transaction.findAll({
+        where: {
+          userId: req.userId,
+        },
+      });
+      res.json(transactions);
+    } else next();
   } catch (err) {
     next(err);
   }
@@ -16,8 +18,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/tickers', async (req, res, next) => {
   try {
-    const tickers = await Transaction.getTickers(req.userId);
-    res.json(tickers);
+    if (req.user.id && req.user.id === +req.userId) {
+      const tickers = await Transaction.getTickers(req.userId);
+      res.json(tickers);
+    } else next();
   } catch (err) {
     next(err);
   }
@@ -25,14 +29,16 @@ router.get('/tickers', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
-    const balance = user.balance - req.body.price * req.body.shares;
-    await user.update({ balance });
-    const transaction = await Transaction.create({
-      ...req.body,
-      userId: req.userId,
-    });
-    res.json(transaction);
+    if (req.user.id && req.user.id === +req.userId) {
+      const user = await User.findById(req.userId);
+      const balance = user.balance - req.body.price * req.body.shares;
+      await user.update({ balance });
+      const transaction = await Transaction.create({
+        ...req.body,
+        userId: req.userId,
+      });
+      res.json(transaction);
+    } else next();
   } catch (err) {
     next(err);
   }

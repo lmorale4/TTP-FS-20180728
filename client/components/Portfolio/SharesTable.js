@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { clearingInterval, requestInInterval } from '../../../utils';
+
 import {
   Grid,
   Table,
@@ -31,6 +33,15 @@ class SharesTable extends Component {
     super();
     this.setColor = this.setColor.bind(this);
   }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.transactions.length !== prevProps.transactions.length) {
+      clearingInterval();
+      requestInInterval();
+    }
+  }
+
   setColor(price, stockPrice) {
     if (stockPrice === price) return 'ok';
     else if (stockPrice > price) return 'good';
@@ -56,19 +67,26 @@ class SharesTable extends Component {
                 <TableRow
                   key={stock.id}
                   className={
-                    classes[
-                      this.setColor(
-                        stock.price,
-                        currPrices[stock.ticker].quote.open
-                      )
-                    ]
+                    isPortfolio
+                      ? classes[
+                          this.setColor(
+                            stock.price,
+                            Math.round(
+                              currPrices[stock.ticker].quote.open * 100
+                            ) / 100
+                          )
+                        ]
+                      : ''
                   }
                 >
                   <TableCell>{stock.ticker}</TableCell>
                   <TableCell>{stock.shares}</TableCell>
                   <TableCell>
                     {isPortfolio
-                      ? currPrices[stock.ticker].quote.latestPrice *
+                      ? (Math.round(
+                          currPrices[stock.ticker].quote.latestPrice * 100
+                        ) /
+                          100) *
                         stock.shares
                       : stock.price}
                   </TableCell>

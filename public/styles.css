@@ -13,3 +13,8 @@ a {
 button {
   background-color: #000 !important;
 }
+
+.icon {
+  width: 3em;
+  height: 3em;
+}
