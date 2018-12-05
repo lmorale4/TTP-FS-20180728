@@ -43,7 +43,7 @@ export const getTransactions = () => async (dispatch, getState) => {
     dispatch(fetching(false));
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
@@ -57,7 +57,7 @@ const getStockPrice = ticker => async dispatch => {
     dispatch(fetching(false));
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
@@ -94,7 +94,7 @@ export const buyStock = stock => async (dispatch, getState) => {
     dispatch(fetching(false));
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
@@ -114,7 +114,7 @@ export const getCurrPrices = () => async (dispatch, getState) => {
     }
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 

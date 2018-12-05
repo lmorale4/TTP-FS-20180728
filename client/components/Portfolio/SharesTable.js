@@ -17,6 +17,10 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
+  grow: {
+    flexGrow: 1,
+    width: '100%',
+  },
   good: {
     backgroundColor: theme.palette.status.good,
   },
@@ -51,8 +55,10 @@ class SharesTable extends Component {
     const { classes, currPrices, match, transactions } = this.props;
     const isPortfolio = match.path !== '/transactions';
     return (
-      <Grid item xs={8}>
-        <Typography variant="h5">Your Assets</Typography>
+      <Grid item xs={8} className={classes.grow}>
+        <Typography variant="h5">
+          {isPortfolio ? 'Your Assets' : 'Transactions'}
+        </Typography>
         <Table>
           <TableHead>
             <TableRow>

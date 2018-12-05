@@ -35,7 +35,7 @@ export const getTickers = () => async dispatch => {
     dispatch(fetching(false));
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
@@ -48,7 +48,7 @@ export const getPrice = ticker => async dispatch => {
     dispatch(setCurrTickerPrice(latestPrice));
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 

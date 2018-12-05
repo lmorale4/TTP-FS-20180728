@@ -13,6 +13,16 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+
+const styles = theme => ({
+  spacing: {
+    marginTop: theme.spacing.unit * 5,
+    marginBottom: theme.spacing.unit * 5,
+  },
+});
+
 class BuyStocksForm extends Component {
   constructor() {
     super();
@@ -52,39 +62,43 @@ class BuyStocksForm extends Component {
   }
 
   render() {
-    const { user, tickers, price } = this.props;
+    const { user, tickers, price, classes } = this.props;
     const { ticker, shares } = this.state;
     return (
       <Grid item xs={4}>
-        <Typography variant="h5">Cash: ${user.balance}</Typography>
+        <Typography variant="h5">Cash: ${user.balance.toFixed(2)}</Typography>
         <form onSubmit={this.handleSubmit}>
-          <InputLabel htmlFor="ticker">Ticker</InputLabel>
-          <Select
-            native
-            value={ticker}
-            onChange={this.handleChange}
-            name="ticker"
-            id="ticker"
-            fullWidth
-          >
-            <option value="" />
-            {tickers.map(tick => (
-              <option key={tick} value={tick}>
-                {tick}
-              </option>
-            ))}
-          </Select>
-          {price > 0 && <p>Price per Share: {price}</p>}
-          <TextField
-            label="Qty"
-            name="shares"
-            onChange={this.handleChange}
-            value={shares}
-            fullWidth
-          />
-          <Button type="submit" color="secondary">
-            Buy
-          </Button>
+          <div className={classes.spacing}>
+            <InputLabel htmlFor="ticker">Ticker</InputLabel>
+            <Select
+              native
+              value={ticker}
+              onChange={this.handleChange}
+              name="ticker"
+              id="ticker"
+              fullWidth
+            >
+              <option value="" />
+              {tickers.map(tick => (
+                <option key={tick} value={tick}>
+                  {tick}
+                </option>
+              ))}
+            </Select>
+            {price > 0 && <p>Price per Share: {price}</p>}
+            <TextField
+              label="Qty"
+              name="shares"
+              onChange={this.handleChange}
+              value={shares}
+              fullWidth
+            />
+          </div>
+          <div className={classes.spacing}>
+            <Button type="submit" color="secondary">
+              Buy
+            </Button>
+          </div>
         </form>
       </Grid>
     );
@@ -103,7 +117,13 @@ const mapDispatch = dispatch => ({
   removePrice: stock => dispatch(removeCurrTickerPrice(stock)),
 });
 
-export default connect(
-  mapState,
-  mapDispatch
-)(BuyStocksForm);
+BuyStocksForm.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(
+  connect(
+    mapState,
+    mapDispatch
+  )(BuyStocksForm)
+);

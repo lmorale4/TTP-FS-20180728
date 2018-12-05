@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
@@ -9,37 +9,43 @@ import { UserForm } from './User';
 import { Home, Transactions } from './Portfolio';
 import Loading from './Loading';
 
-// load transactions here after user has loaded
-// Maybe use shouldComponentUpdate for checking if the user is set
-class Routes extends Component {
-  componentDidMount() {
-    // this.props.loadData();
-  }
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-  render() {
-    const { isLoggedIn, isFetching } = this.props;
-    return (
-      <main>
-        {isFetching ? (
-          <Loading />
-        ) : (
-          <Switch>
-            <Route exact path="/signup" component={UserForm} />
-            <Route exact path="/login" component={UserForm} />
-            {isLoggedIn && (
-              <Switch>
-                <Redirect exact from="/portfolio" to="/" />
-                <Route exact path="/" component={Home} />
-                <Route exact path="/transactions" component={Transactions} />
-              </Switch>
-            )}
-            <Route component={UserForm} />
-          </Switch>
-        )}
-      </main>
-    );
-  }
-}
+const styles = theme => ({
+  grow: {
+    flexGrow: 1,
+  },
+  layout: {
+    width: 'auto',
+    marginLeft: theme.spacing.unit * 15,
+    marginRight: theme.spacing.unit * 15,
+  },
+});
+
+const Routes = ({ isLoggedIn, isFetching, classes }) => {
+  return (
+    <main className={classNames(classes.layout, classes.grow)}>
+      {isFetching ? (
+        <Loading />
+      ) : (
+        <Switch>
+          <Route exact path="/signup" component={UserForm} />
+          <Route exact path="/login" component={UserForm} />
+          {isLoggedIn && (
+            <Switch>
+              <Redirect exact from="/portfolio" to="/" />
+              <Route exact path="/" component={Home} />
+              <Route exact path="/transactions" component={Transactions} />
+            </Switch>
+          )}
+          <Route component={UserForm} />
+        </Switch>
+      )}
+    </main>
+  );
+};
 
 const mapState = state => ({
   isLoggedIn: !!state.user.id,
@@ -54,9 +60,15 @@ const mapDispatch = dispatch => ({
   },
 });
 
-export default withRouter(
-  connect(
-    mapState,
-    mapDispatch
-  )(Routes)
+Routes.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(
+  withRouter(
+    connect(
+      mapState,
+      mapDispatch
+    )(Routes)
+  )
 );

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { auth } from '../../store/user';
 
 import SignUp from './SignUpFields';
-import Login from './LoginFields';
 
 import { Link } from 'react-router-dom';
 
@@ -12,8 +11,10 @@ import {
   Card,
   CardActions,
   CardContent,
+  TextField,
   Typography,
 } from '@material-ui/core';
+import classNames from 'classnames';
 
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -31,6 +32,13 @@ const styles = theme => ({
   },
   color: {
     color: theme.palette.primary.main,
+  },
+  error: {
+    backgroundColor: theme.palette.status.bad,
+    padding: '5px',
+  },
+  grow: {
+    flexGrow: 1,
   },
   topSpace: {
     marginTop: '10px',
@@ -68,8 +76,10 @@ class UserForm extends Component {
   }
 
   render() {
-    const { match, classes } = this.props;
+    const { match, classes, error } = this.props;
+    const { email, password } = this.state;
     const isLogin = match.path === '/login';
+    const isError = error.status === 401;
     const buttonText = isLogin ? 'Login' : 'Sign Up';
     return (
       <form onSubmit={this.handleSubmit}>
@@ -78,16 +88,36 @@ class UserForm extends Component {
         </Typography>
         <Card className={classes.topSpace}>
           <CardContent>
-            {isLogin ? (
-              <Login handleChange={this.handleChange} {...this.state} />
-            ) : (
+            {!isLogin && (
               <SignUp handleChange={this.handleChange} {...this.state} />
             )}
+            <TextField
+              required
+              label="Email"
+              name="email"
+              value={email}
+              fullWidth
+              onChange={this.handleChange}
+            />
+            <TextField
+              required
+              label="Password"
+              name="password"
+              type="password"
+              value={password}
+              fullWidth
+              onChange={this.handleChange}
+            />
           </CardContent>
           <CardActions>
             <Button type="submit" color="secondary">
               {buttonText}
             </Button>
+            {isError && (
+              <div className={classNames(classes.error, classes.grow)}>
+                <Typography error="true">{error.data}</Typography>
+              </div>
+            )}
           </CardActions>
         </Card>
         <Card className={classes.background}>
@@ -107,6 +137,9 @@ class UserForm extends Component {
     );
   }
 }
+const mapState = state => ({
+  error: state.error,
+});
 
 const mapDispatch = (dispatch, { history, match }) => ({
   auth: user =>
@@ -119,7 +152,7 @@ UserForm.propTypes = {
 
 export default withStyles(styles)(
   connect(
-    null,
+    mapState,
     mapDispatch
   )(UserForm)
 );

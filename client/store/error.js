@@ -15,7 +15,7 @@ export const removeError = () => ({
 const reducer = (state = {}, action) => {
   switch (action.type) {
     case SET_ERROR:
-      return action.error;
+      return action.error || state;
     case REMOVE_ERROR:
       return {};
     default:

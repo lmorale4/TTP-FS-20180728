@@ -11,16 +11,16 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
-  textRight: {
-    textAlign: 'right',
+  grow: {
+    flexGrow: 1,
   },
   layout: {
     width: '100%',
     marginLeft: theme.spacing.unit * 15,
     marginRight: theme.spacing.unit * 15,
   },
-  grow: {
-    flexGrow: 1,
+  textRight: {
+    textAlign: 'right',
   },
 });
 

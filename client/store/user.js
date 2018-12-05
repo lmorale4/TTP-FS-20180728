@@ -36,7 +36,7 @@ export const me = () => async dispatch => {
     dispatch(fetching(false));
   } catch (err) {
     dispatch(fetching(false));
-    console.error(err);
+    dispatch(setError(err.response));
   }
 };
 
@@ -45,14 +45,6 @@ export const auth = (user, history, method) => async dispatch => {
   try {
     dispatch(fetching(true));
     res = await axios.post(`/auth/${method}`, user);
-    dispatch(fetching(false));
-  } catch (err) {
-    dispatch(fetching(false));
-    dispatch(setError(err));
-  }
-
-  try {
-    dispatch(fetching(true));
     await dispatch(setUser(res.data));
     await dispatch(getCurrPrices());
     await dispatch(getTransactions());
@@ -60,7 +52,7 @@ export const auth = (user, history, method) => async dispatch => {
     history.push('/portfolio');
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
@@ -73,7 +65,7 @@ export const logout = history => async dispatch => {
     history.push('/login');
   } catch (err) {
     dispatch(fetching(false));
-    dispatch(setError(err));
+    dispatch(setError(err.response));
   }
 };
 
