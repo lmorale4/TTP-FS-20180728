@@ -112,7 +112,9 @@ const mapState = state => ({
 });
 
 const mapDispatch = dispatch => ({
-  getPrice: ticker => dispatch(getPrice(ticker)),
+  getPrice: ticker => {
+    dispatch(getPrice(ticker));
+  },
   buyStock: stock => dispatch(buyStock(stock)),
   removePrice: stock => dispatch(removeCurrTickerPrice(stock)),
 });

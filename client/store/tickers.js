@@ -19,7 +19,7 @@ const setCurrTickerPrice = price => ({
 });
 
 export const removeCurrTickerPrice = price => ({
-  type: SET_CURRENT_TICKER_PRICE,
+  type: REMOVE_CURRENT_TICKER_PRICE,
   price,
 });
 

@@ -69,7 +69,7 @@ const start = async () => {
   await sessionStore.sync();
   await db.sync({ force: false });
   await init();
-  const PORT = 8080;
+  const PORT = process.env.PORT || 8080;
   app.listen(PORT, err => {
     if (err) console.error(err);
     else console.log(`http://localhost:${PORT}`);
